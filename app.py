@@ -5,7 +5,10 @@ import psycopg2
 app = Flask(__name__)
 
 def get_db():
-    conn = psycopg2.connect(os.environ["DATABASE_URL"])
+    url = os.environ["DATABASE_URL"]
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+    conn = psycopg2.connect(url)
     return conn
 
 def init_db():
@@ -44,10 +47,6 @@ def submit():
     cur.close()
     conn.close()
     return redirect(url_for("index"))
-
-if __name__ == "__main__":
-    init_db()
-    app.run()
 
 with app.app_context():
     init_db()
