@@ -3,41 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guestbook</title>
+    <title>Campus Cafe Votes</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-        h1 { color: #333; }
-        form { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        input, textarea { width: 100%; padding: 8px; margin: 6px 0 14px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { background: #4a90e2; color: white; padding: 10px 24px; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #357abd; }
-        .entry { border-bottom: 1px solid #eee; padding: 12px 0; }
-        .entry strong { color: #333; }
-        .entry small { color: #999; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #fff8f0, #fff0e0);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 620px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #c0392b;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .emoji { font-size: 2.2rem; width: 48px; text-align: center; }
+        .info { flex: 1; }
+        .name { font-size: 1.05rem; font-weight: 600; color: #333; margin-bottom: 6px; }
+        .bar-bg {
+            background: #f0f0f0;
+            border-radius: 99px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            height: 10px;
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+        .votes {
+            font-size: 0.82rem;
+            color: #aaa;
+            margin-top: 4px;
+        }
+        .vote-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .vote-btn:hover { background: #c0392b; }
+        .footer {
+            text-align: center;
+            color: #bbb;
+            font-size: 0.8rem;
+            margin-top: 24px;
+        }
     </style>
 </head>
 <body>
-    <h1>Guestbook</h1>
+    <div class="container">
+        <h1>🍽️ Campus Cafe Votes</h1>
+        <p class="subtitle">Vote for your favourite menu item!</p>
 
-    <form action="/submit" method="POST">
-        <label>Your name</label>
-        <input type="text" name="name" required placeholder="e.g. John">
-        <label>Message</label>
-        <textarea name="message" rows="3" required placeholder="Leave a message..."></textarea>
-        <button type="submit">Submit</button>
-    </form>
-
-    <h2>Entries</h2>
-    {% if entries %}
-        {% for name, message, created_at in entries %}
-        <div class="entry">
-            <strong>{{ name }}</strong>
-            <small> — {{ created_at.strftime('%d %b %Y, %H:%M') }}</small>
-            <p>{{ message }}</p>
+        {% for id, name, emoji, votes in items %}
+        <div class="card">
+            <div class="emoji">{{ emoji }}</div>
+            <div class="info">
+                <div class="name">{{ name }}</div>
+                <div class="bar-bg">
+                    <div class="bar-fill" style="width: {{ (votes / total * 100)|round|int }}%"></div>
+                </div>
+                <div class="votes">{{ votes }} vote{{ 's' if votes != 1 else '' }}</div>
+            </div>
+            <a href="/vote/{{ id }}" class="vote-btn">Vote</a>
         </div>
         {% endfor %}
-    {% else %}
-        <p style="color:#999">No entries yet. Be the first!</p>
-    {% endif %}
+
+        <p class="footer">Campus Cafe — cast your vote today!</p>
+    </div>
 </body>
 </html>
